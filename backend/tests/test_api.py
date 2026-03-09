@@ -1,0 +1,102 @@
+import pytest
+from rest_framework.test import APIClient
+from rest_framework import status
+from tasks.models import Task
+from tests.factories import UserFactory, TaskFactory
+
+
+@pytest.fixture
+def api_client():
+    return APIClient()
+
+
+@pytest.fixture
+def authenticated_client(api_client):
+    """Client authentifié via JWT."""
+    user = UserFactory()
+    response = api_client.post('/api/auth/token/', {
+        'username': user.username,
+        'password': 'testpass123',
+    })
+    token = response.data['access']
+    api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
+    api_client.user = user
+    return api_client
+
+
+@pytest.mark.django_db
+class TestTaskCreate:
+    """Tests d'intégration — endpoint POST /api/tasks/"""
+
+    def test_authenticated_user_can_create_task(self, authenticated_client):
+        response = authenticated_client.post('/api/tasks/', {
+            'title': 'Nouvelle tâche',
+            'category': 'travail',
+        })
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data['title'] == 'Nouvelle tâche'
+        assert response.data['completed'] is False
+
+    def test_unauthenticated_user_cannot_create_task(self, api_client):
+        response = api_client.post('/api/tasks/', {'title': 'Test'})
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_create_task_with_invalid_title_returns_400(self, authenticated_client):
+        response = authenticated_client.post('/api/tasks/', {'title': '   '})
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_task_owner_is_set_automatically(self, authenticated_client):
+        response = authenticated_client.post('/api/tasks/', {
+            'title': 'Ma tâche',
+            'category': 'perso',
+        })
+        assert response.data['owner'] == authenticated_client.user.username
+
+
+@pytest.mark.django_db
+class TestTaskList:
+    """Tests d'intégration — endpoint GET /api/tasks/"""
+
+    def test_user_sees_only_own_tasks(self, api_client):
+        user1 = UserFactory()
+        user2 = UserFactory()
+        TaskFactory(owner=user1, title='Tâche user1')
+        TaskFactory(owner=user2, title='Tâche user2')
+
+        # Authentifier user1
+        response = api_client.post('/api/auth/token/', {
+            'username': user1.username,
+            'password': 'testpass123',
+        })
+        api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {response.data["access"]}')
+
+        response = api_client.get('/api/tasks/')
+        assert response.status_code == status.HTTP_200_OK
+        titles = [t['title'] for t in response.data]
+        assert 'Tâche user1' in titles
+        assert 'Tâche user2' not in titles
+
+    def test_filter_tasks_by_category(self, authenticated_client):
+        TaskFactory(owner=authenticated_client.user, category='travail')
+        TaskFactory(owner=authenticated_client.user, category='perso')
+
+        response = authenticated_client.get('/api/tasks/?category=travail')
+        assert response.status_code == status.HTTP_200_OK
+        assert all(t['category'] == 'travail' for t in response.data)
+
+
+@pytest.mark.django_db
+class TestTaskDelete:
+    """Tests d'intégration — endpoint DELETE /api/tasks/{id}/"""
+
+    def test_user_can_delete_own_task(self, authenticated_client):
+        task = TaskFactory(owner=authenticated_client.user)
+        response = authenticated_client.delete(f'/api/tasks/{task.id}/')
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert not Task.objects.filter(id=task.id).exists()
+
+    def test_user_cannot_delete_other_user_task(self, authenticated_client, api_client):
+        other_user = UserFactory()
+        task = TaskFactory(owner=other_user)
+        response = authenticated_client.delete(f'/api/tasks/{task.id}/')
+        assert response.status_code == status.HTTP_404_NOT_FOUND
