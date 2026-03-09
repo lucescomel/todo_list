@@ -95,9 +95,7 @@ jobs:
 
       - name: Wait for servers
         run: |
-          echo "=== Checking Django ==="
-          curl -v http://127.0.0.1:8000/api/auth/token/ || true
-          npx wait-on http://127.0.0.1:8000/api/auth/token/ --timeout 60000 --interval 1000
+          npx wait-on tcp:127.0.0.1:8000 --timeout 60000 --interval 1000
           npx wait-on http://127.0.0.1:4173 --timeout 30000 --interval 1000
 
       - name: Run Cypress
