@@ -79,7 +79,7 @@ jobs:
           echo "=== Django logs ==="
           cat /tmp/django.log
         env:
-          DJANGO_SETTINGS_MODULE: config.settings
+          DJANGO_SETTINGS_MODULE: config.settings.development
 
       - name: Install frontend dependencies
         working-directory: frontend
@@ -88,6 +88,8 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: npm run build
+        env:
+          VITE_API_URL: http://127.0.0.1:8000/api
 
       - name: Start Vite preview
         working-directory: frontend
