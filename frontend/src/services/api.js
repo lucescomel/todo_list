@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const BASE_URL = import.meta.env.VITE_API_URL || '/api'
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: BASE_URL,
 })
 
 // Injecter le token JWT dans chaque requête
@@ -22,7 +24,7 @@ api.interceptors.response.use(
       original._retry = true
       try {
         const refresh = localStorage.getItem('refresh_token')
-        const { data } = await axios.post('/api/auth/token/refresh/', { refresh })
+        const { data } = await axios.post(`${BASE_URL}/auth/token/refresh/`, { refresh })
         localStorage.setItem('access_token', data.access)
         original.headers.Authorization = `Bearer ${data.access}`
         return api(original)
@@ -37,8 +39,8 @@ api.interceptors.response.use(
 )
 
 export const authApi = {
-  login: (credentials) => axios.post('/api/auth/token/', credentials),
-  refresh: (refresh) => axios.post('/api/auth/token/refresh/', { refresh }),
+  login: (credentials) => axios.post(`${BASE_URL}/auth/token/`, credentials),
+  refresh: (refresh) => axios.post(`${BASE_URL}/auth/token/refresh/`, { refresh }),
 }
 
 export const tasksApi = {
