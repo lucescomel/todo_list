@@ -83,7 +83,7 @@ User.objects.create_user('testuser', password='testpass123')
 
 cd frontend
 npm run cy:open   # mode interactif
-npm run cy:run    # mode headless
+npm run cy:run    # mode headless (utilisé sur MAc car imppossible de faire fonctionner la premiere commande)
 ```
 
 ---

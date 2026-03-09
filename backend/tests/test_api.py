@@ -58,21 +58,21 @@ class TestTaskList:
     """Tests d'intégration — endpoint GET /api/tasks/"""
 
     def test_user_sees_only_own_tasks(self, api_client):
-        user1 = UserFactory()
-        user2 = UserFactory()
-        TaskFactory(owner=user1, title='Tâche user1')
-        TaskFactory(owner=user2, title='Tâche user2')
+        first_user = UserFactory()
+        second_user = UserFactory()
+        TaskFactory(owner=first_user, title='Tâche user1')
+        TaskFactory(owner=second_user, title='Tâche user2')
 
-        # Authentifier user1
+        # Authentifier first_user
         response = api_client.post('/api/auth/token/', {
-            'username': user1.username,
+            'username': first_user.username,
             'password': 'testpass123',
         })
         api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {response.data["access"]}')
 
         response = api_client.get('/api/tasks/')
         assert response.status_code == status.HTTP_200_OK
-        titles = [t['title'] for t in response.data]
+        titles = [task['title'] for task in response.data]
         assert 'Tâche user1' in titles
         assert 'Tâche user2' not in titles
 
@@ -82,7 +82,7 @@ class TestTaskList:
 
         response = authenticated_client.get('/api/tasks/?category=travail')
         assert response.status_code == status.HTTP_200_OK
-        assert all(t['category'] == 'travail' for t in response.data)
+        assert all(task['category'] == 'travail' for task in response.data)
 
 
 @pytest.mark.django_db

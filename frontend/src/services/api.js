@@ -6,28 +6,28 @@ const api = axios.create({
   baseURL: BASE_URL,
 })
 
-// Injecter le token JWT dans chaque requête
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+// Ajoute automatiquement le token JWT à chaque requête
+api.interceptors.request.use((requestConfig) => {
+  const accessToken = localStorage.getItem('access_token')
+  if (accessToken) {
+    requestConfig.headers.Authorization = `Bearer ${accessToken}`
   }
-  return config
+  return requestConfig
 })
 
-// Rafraîchir le token si 401
+// Gère le rafraîchissement automatique du token en cas d'erreur 401
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const original = error.config
-    if (error.response?.status === 401 && !original._retry) {
-      original._retry = true
+    const originalRequest = error.config
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
       try {
-        const refresh = localStorage.getItem('refresh_token')
-        const { data } = await axios.post(`${BASE_URL}/auth/token/refresh/`, { refresh })
+        const refreshToken = localStorage.getItem('refresh_token')
+        const { data } = await axios.post(`${BASE_URL}/auth/token/refresh/`, { refresh: refreshToken })
         localStorage.setItem('access_token', data.access)
-        original.headers.Authorization = `Bearer ${data.access}`
-        return api(original)
+        originalRequest.headers.Authorization = `Bearer ${data.access}`
+        return api(originalRequest)
       } catch {
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
@@ -40,7 +40,7 @@ api.interceptors.response.use(
 
 export const authApi = {
   login: (credentials) => axios.post(`${BASE_URL}/auth/token/`, credentials),
-  refresh: (refresh) => axios.post(`${BASE_URL}/auth/token/refresh/`, { refresh }),
+  refresh: (refreshToken) => axios.post(`${BASE_URL}/auth/token/refresh/`, { refresh: refreshToken }),
 }
 
 export const tasksApi = {

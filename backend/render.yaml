@@ -10,10 +10,10 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        sync: false          # à renseigner manuellement avec l'URL Supabase
+        sync: false
       - key: ALLOWED_HOSTS
-        sync: false          # ex: todo-app-backend.onrender.com
+        sync: false
       - key: CORS_ALLOWED_ORIGINS
-        sync: false          # ex: https://your-app.netlify.app
+        sync: false
       - key: SENTRY_DSN
-        sync: false          # ex: https://xxx@sentry.io/yyy
+        sync: false

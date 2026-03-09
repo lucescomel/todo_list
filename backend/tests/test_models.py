@@ -43,8 +43,8 @@ class TestTaskModel:
     def test_task_ordering_by_created_at_desc(self):
         """Les tâches sont retournées par ordre décroissant de création."""
         user = UserFactory()
-        t1 = TaskFactory(owner=user, title='Première')
-        t2 = TaskFactory(owner=user, title='Deuxième')
+        first_task = TaskFactory(owner=user, title='Première')
+        second_task = TaskFactory(owner=user, title='Deuxième')
         tasks = list(Task.objects.filter(owner=user))
-        assert tasks[0] == t2
-        assert tasks[1] == t1
+        assert tasks[0] == second_task
+        assert tasks[1] == first_task

@@ -13,8 +13,8 @@ export default function AddTaskForm({ onAdd }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (event) => {
+    event.preventDefault()
     if (!title.trim()) return
     setError(null)
     setLoading(true)
@@ -39,19 +39,19 @@ export default function AddTaskForm({ onAdd }) {
         type="text"
         placeholder="Nouvelle tâche…"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(event) => setTitle(event.target.value)}
         aria-label="Titre de la tâche"
         style={{ flex: 1, minWidth: 200 }}
         required
       />
       <select
         value={category}
-        onChange={(e) => setCategory(e.target.value)}
+        onChange={(event) => setCategory(event.target.value)}
         aria-label="Catégorie"
         style={{ width: 130 }}
       >
-        {CATEGORIES.map((c) => (
-          <option key={c.value} value={c.value}>{c.label}</option>
+        {CATEGORIES.map((categoryOption) => (
+          <option key={categoryOption.value} value={categoryOption.value}>{categoryOption.label}</option>
         ))}
       </select>
       <button

@@ -34,17 +34,17 @@ export default function TaskList() {
 
   const handleAdd = async (taskData) => {
     const { data } = await tasksApi.create(taskData)
-    setTasks((prev) => [data, ...prev])
+    setTasks((previousTasks) => [data, ...previousTasks])
   }
 
   const handleToggle = async (task) => {
     const { data } = await tasksApi.update(task.id, { completed: !task.completed })
-    setTasks((prev) => prev.map((t) => (t.id === task.id ? data : t)))
+    setTasks((previousTasks) => previousTasks.map((item) => (item.id === task.id ? data : item)))
   }
 
-  const handleDelete = async (id) => {
-    await tasksApi.delete(id)
-    setTasks((prev) => prev.filter((t) => t.id !== id))
+  const handleDelete = async (taskId) => {
+    await tasksApi.delete(taskId)
+    setTasks((previousTasks) => previousTasks.filter((item) => item.id !== taskId))
   }
 
   return (
@@ -53,19 +53,19 @@ export default function TaskList() {
 
       {/* Filtres par catégorie */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-        {FILTER_OPTIONS.map((opt) => (
+        {FILTER_OPTIONS.map((option) => (
           <button
-            key={opt.value}
-            onClick={() => setFilter(opt.value)}
-            aria-pressed={filter === opt.value}
+            key={option.value}
+            onClick={() => setFilter(option.value)}
+            aria-pressed={filter === option.value}
             style={{
-              background: filter === opt.value ? '#6366f1' : '#e5e7eb',
-              color: filter === opt.value ? '#fff' : '#374151',
+              background: filter === option.value ? '#6366f1' : '#e5e7eb',
+              color: filter === option.value ? '#fff' : '#374151',
               padding: '4px 14px',
               fontSize: '0.85rem',
             }}
           >
-            {opt.label}
+            {option.label}
           </button>
         ))}
       </div>
