@@ -12,7 +12,7 @@ def api_client():
 
 @pytest.fixture
 def authenticated_client(api_client):
-    """Client authentifié via JWT."""
+    """Prépare un client authentifié pour les tests."""
     user = UserFactory()
     response = api_client.post('/api/auth/token/', {
         'username': user.username,
@@ -26,7 +26,7 @@ def authenticated_client(api_client):
 
 @pytest.mark.django_db
 class TestTaskCreate:
-    """Tests d'intégration — endpoint POST /api/tasks/"""
+    """Vérifie la création de tâches."""
 
     def test_authenticated_user_can_create_task(self, authenticated_client):
         response = authenticated_client.post('/api/tasks/', {
@@ -55,7 +55,7 @@ class TestTaskCreate:
 
 @pytest.mark.django_db
 class TestTaskList:
-    """Tests d'intégration — endpoint GET /api/tasks/"""
+    """Vérifie la lecture des tâches."""
 
     def test_user_sees_only_own_tasks(self, api_client):
         first_user = UserFactory()
@@ -87,7 +87,7 @@ class TestTaskList:
 
 @pytest.mark.django_db
 class TestTaskDelete:
-    """Tests d'intégration — endpoint DELETE /api/tasks/{id}/"""
+    """Vérifie la suppression de tâches."""
 
     def test_user_can_delete_own_task(self, authenticated_client):
         task = TaskFactory(owner=authenticated_client.user)

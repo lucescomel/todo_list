@@ -27,7 +27,7 @@ class TestTaskModel:
         assert task.completed is True
 
     def test_task_str_representation(self):
-        """La représentation string inclut catégorie et titre."""
+        """La représentation textuelle inclut la catégorie et le titre."""
         task = TaskFactory(title='Faire les courses', category=Category.PERSO)
         assert 'Faire les courses' in str(task)
         assert 'perso' in str(task)
@@ -41,10 +41,10 @@ class TestTaskModel:
             task.full_clean()
 
     def test_task_ordering_by_created_at_desc(self):
-        """Les tâches sont retournées par ordre décroissant de création."""
+        """Les tâches les plus récentes apparaissent en premier."""
         user = UserFactory()
         first_task = TaskFactory(owner=user, title='Première')
         second_task = TaskFactory(owner=user, title='Deuxième')
-        tasks = list(Task.objects.filter(owner=user))
-        assert tasks[0] == second_task
-        assert tasks[1] == first_task
+        tasks_list = list(Task.objects.filter(owner=user))
+        assert tasks_list[0] == second_task
+        assert tasks_list[1] == first_task
