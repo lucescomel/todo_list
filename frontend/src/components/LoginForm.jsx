@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import '../assets/css/LoginForm.css'
 
 export default function LoginForm() {
   const { login } = useAuth()
@@ -22,10 +23,10 @@ export default function LoginForm() {
   }
 
   return (
-    <div style={{ maxWidth: 380, margin: '4rem auto', padding: '2rem', background: '#fff', borderRadius: 12, boxShadow: '0 2px 16px #0001' }}>
-      <h1 style={{ marginBottom: '1.5rem', fontSize: '1.4rem' }}>Connexion</h1>
+    <div className="login-container">
+      <h1 className="login-title">Connexion</h1>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '1rem' }}>
+        <div className="form-group">
           <label htmlFor="username">Nom d'utilisateur</label>
           <input
             id="username"
@@ -34,10 +35,10 @@ export default function LoginForm() {
             onChange={(e) => setUsername(e.target.value)}
             required
             autoFocus
-            style={{ marginTop: 4 }}
+            className="form-input"
           />
         </div>
-        <div style={{ marginBottom: '1rem' }}>
+        <div className="form-group">
           <label htmlFor="password">Mot de passe</label>
           <input
             id="password"
@@ -45,19 +46,15 @@ export default function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ marginTop: 4 }}
+            className="form-input"
           />
         </div>
         {error && (
-          <p role="alert" style={{ color: '#dc2626', marginBottom: '1rem', fontSize: '0.9rem' }}>
+          <p role="alert" className="error-message">
             {error}
           </p>
         )}
-        <button
-          type="submit"
-          disabled={loading}
-          style={{ width: '100%', background: '#6366f1', color: '#fff', padding: '0.65rem' }}
-        >
+        <button type="submit" disabled={loading} className="submit-button">
           {loading ? 'Connexion…' : 'Se connecter'}
         </button>
       </form>

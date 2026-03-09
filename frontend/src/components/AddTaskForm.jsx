@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import '../assets/css/AddTaskForm.css'
 
 const CATEGORIES = [
   { value: 'travail', label: 'Travail' },
@@ -32,7 +33,7 @@ export default function AddTaskForm({ onAdd }) {
   return (
     <form
       onSubmit={handleSubmit}
-      style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}
+      className="add-task-form"
       aria-label="Ajouter une tâche"
     >
       <input
@@ -41,14 +42,14 @@ export default function AddTaskForm({ onAdd }) {
         value={title}
         onChange={(event) => setTitle(event.target.value)}
         aria-label="Titre de la tâche"
-        style={{ flex: 1, minWidth: 200 }}
+        className="task-input"
         required
       />
       <select
         value={category}
         onChange={(event) => setCategory(event.target.value)}
         aria-label="Catégorie"
-        style={{ width: 130 }}
+        className="category-select"
       >
         {CATEGORIES.map((categoryOption) => (
           <option key={categoryOption.value} value={categoryOption.value}>{categoryOption.label}</option>
@@ -57,12 +58,12 @@ export default function AddTaskForm({ onAdd }) {
       <button
         type="submit"
         disabled={loading || !title.trim()}
-        style={{ background: '#6366f1', color: '#fff' }}
+        className="add-button"
       >
         {loading ? '…' : 'Ajouter'}
       </button>
       {error && (
-        <p role="alert" style={{ width: '100%', color: '#dc2626', fontSize: '0.85rem' }}>
+        <p role="alert" className="form-error">
           {error}
         </p>
       )}

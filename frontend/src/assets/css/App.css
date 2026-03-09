@@ -1,0 +1,19 @@
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.logout-button {
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 0.85rem;
+}

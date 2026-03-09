@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { tasksApi } from '../services/api'
 import TaskItem from './TaskItem'
 import AddTaskForm from './AddTaskForm'
+import '../assets/css/TaskList.css'
 
 const FILTER_OPTIONS = [
   { value: '', label: 'Toutes' },
@@ -52,18 +53,13 @@ export default function TaskList() {
       <AddTaskForm onAdd={handleAdd} />
 
       {/* Filtres par catégorie */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+      <div className="filters-container">
         {FILTER_OPTIONS.map((option) => (
           <button
             key={option.value}
             onClick={() => setFilter(option.value)}
             aria-pressed={filter === option.value}
-            style={{
-              background: filter === option.value ? '#6366f1' : '#e5e7eb',
-              color: filter === option.value ? '#fff' : '#374151',
-              padding: '4px 14px',
-              fontSize: '0.85rem',
-            }}
+            className={`filter-button ${filter === option.value ? 'active' : 'inactive'}`}
           >
             {option.label}
           </button>
@@ -71,13 +67,13 @@ export default function TaskList() {
       </div>
 
       {loading && <p aria-live="polite">Chargement…</p>}
-      {error && <p role="alert" style={{ color: '#dc2626' }}>{error}</p>}
+      {error && <p role="alert" className="error-text">{error}</p>}
 
       {!loading && !error && (
         tasks.length === 0
-          ? <p style={{ color: '#6b7280' }}>Aucune tâche pour l'instant.</p>
+          ? <p className="empty-message">Aucune tâche pour l'instant.</p>
           : (
-            <ul style={{ listStyle: 'none', padding: 0 }} aria-label="Liste des tâches">
+            <ul className="task-list" aria-label="Liste des tâches">
               {tasks.map((task) => (
                 <TaskItem
                   key={task.id}
