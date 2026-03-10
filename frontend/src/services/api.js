@@ -41,6 +41,7 @@ api.interceptors.response.use(
 export const authApi = {
   login: (credentials) => axios.post(`${BASE_URL}/auth/token/`, credentials),
   refresh: (refreshToken) => axios.post(`${BASE_URL}/auth/token/refresh/`, { refresh: refreshToken }),
+  register: (userData) => axios.post(`${BASE_URL}/auth/register/`, userData),
 }
 
 export const tasksApi = {

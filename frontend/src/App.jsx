@@ -1,12 +1,27 @@
+import { useState } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import LoginForm from './components/LoginForm'
+import RegisterForm from './components/RegisterForm'
 import TaskList from './components/TaskList'
 import './assets/css/App.css'
 
 function AppContent() {
-  const { user, logout } = useAuth()
+  const { user, login, logout } = useAuth()
+  const [showRegister, setShowRegister] = useState(false)
 
-  if (!user) return <LoginForm />
+  if (!user) {
+    if (showRegister) {
+      return (
+        <RegisterForm
+          onSuccess={async (username, password) => {
+            await login(username, password)
+          }}
+          onBack={() => setShowRegister(false)}
+        />
+      )
+    }
+    return <LoginForm onRegister={() => setShowRegister(true)} />
+  }
 
   return (
     <div>

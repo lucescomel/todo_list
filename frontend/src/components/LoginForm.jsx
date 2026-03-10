@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import '../assets/css/LoginForm.css'
 
-export default function LoginForm() {
+export default function LoginForm({ onRegister }) {
   const { login } = useAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -58,6 +58,15 @@ export default function LoginForm() {
           {loading ? 'Connexion…' : 'Se connecter'}
         </button>
       </form>
+      <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem', color: '#6b7280' }}>
+        Pas encore de compte ?{' '}
+        <button
+          onClick={onRegister}
+          style={{ background: 'none', border: 'none', color: '#6366f1', cursor: 'pointer', fontWeight: 600 }}
+        >
+          Créer un compte
+        </button>
+      </p>
     </div>
   )
 }

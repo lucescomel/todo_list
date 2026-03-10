@@ -17,9 +17,11 @@ todo-app/
 │   └── manage.py
 ├── frontend/
 │   ├── src/
+│   │   ├── assets/      # images,
+│   │   │   └── css/         # styles de l'application
 │   │   ├── components/  # TaskItem, TaskList, AddTaskForm, LoginForm
 │   │   ├── context/     # AuthContext (JWT)
-│   │   ├── services/    # api.js (axios + interceptors)
+│   │   ├── services/    # api.js
 │   │   └── tests/       # Vitest + RTL
 │   ├── cypress/         # Tests E2E
 │   ├── cypress.config.js
@@ -39,7 +41,7 @@ cd backend
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
-python manage.py createsuperuser  # optionnel
+python manage.py createsuperuser
 python manage.py runserver
 ```
 
