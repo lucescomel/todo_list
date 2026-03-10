@@ -26,13 +26,13 @@ describe('TaskItem — composant de présentation', () => {
   it('affiche une tâche non terminée sans style barré', () => {
     render(<TaskItem task={mockTask} onToggle={vi.fn()} onDelete={vi.fn()} />)
     const title = screen.getByText('Acheter du pain')
-    expect(title).not.toHaveStyle('text-decoration: line-through')
+    expect(title).not.toHaveClass('completed')
   })
 
   it('affiche une tâche terminée avec style "terminée"', () => {
     render(<TaskItem task={mockTaskCompleted} onToggle={vi.fn()} onDelete={vi.fn()} />)
     const title = screen.getByText('Acheter du pain')
-    expect(title).toHaveStyle('text-decoration: line-through')
+    expect(title).toHaveClass('completed')
   })
 
   it('appelle onToggle au clic sur la checkbox', async () => {
